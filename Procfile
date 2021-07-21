@@ -1,1 +1,1 @@
-web: node server & peerjs --port 5001
+peerjs --port 5001
