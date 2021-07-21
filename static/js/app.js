@@ -21,12 +21,18 @@ peer.on("open", peerId => {
             video: true,
             audio: true
         }).then(stream => {
-            console.log("Calling...", id, peerId)
+            // console.log("Calling...", id, peerId)
+            console.log(peerId,id)
             let call = peer.call(id, stream);
+            let video = document.createElement("video");
             call.on("stream", function (remoteStream) {
-                addVideo(remoteStream)
+                console.log("Calling")
+                addVideo(video,remoteStream)
             })
-            addVideo(stream)
+            call.on('close',()=>{
+                video.remove()
+            })
+            // addVideo(stream)
         })
         console.log("helllo world");
     })
@@ -37,8 +43,10 @@ peer.on("open", peerId => {
             audio: true
         }).then(stream => {
             call.answer(stream)
+            let video = document.createElement("video");
             call.on("stream", function (remoteStream) {
-                addVideo(remoteStream)
+                console.log("answering")
+                addVideo(video,remoteStream)
             })
         })
     })
@@ -46,8 +54,9 @@ peer.on("open", peerId => {
 
 
 
-function addVideo(stream) {
-    let video = document.createElement("video");
+function addVideo(video,stream) {
+    console.log("kou")
+    
     video.srcObject = stream
     video.play()
     document.getElementById("koushik").appendChild(video)

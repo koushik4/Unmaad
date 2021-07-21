@@ -15,6 +15,7 @@ io.on("connection", socket => {
     socket.on("hi", (peerId) => {
         socket.broadcast.emit("open",peerId);
     })
+    socket.on("hello",()=>{console.log("jdos")})
 
 })
 server.listen(port, () => {
