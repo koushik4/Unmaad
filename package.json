@@ -1,0 +1,16 @@
+{
+  "name": "unmaad",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": " peerjs --port 5001 & nodemon server"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socketio": "^1.0.0"
+  }
+}
