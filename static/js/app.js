@@ -19,14 +19,14 @@ peer.on("open", peerId => {
         console.log("people");
         navigator.mediaDevices.getUserMedia({
             video: true,
-            audio: false
+            audio: true
         }).then(stream => {
             console.log("Calling...", id, peerId)
             let call = peer.call(id, stream);
             call.on("stream", function (remoteStream) {
                 addVideo(remoteStream)
             })
-            // addVideo(stream)
+            addVideo(stream)
         })
         console.log("helllo world");
     })
@@ -34,7 +34,7 @@ peer.on("open", peerId => {
     peer.on("call", call => {
         navigator.mediaDevices.getUserMedia({
             video: true,
-            audio: false
+            audio: true
         }).then(stream => {
             call.answer(stream)
             call.on("stream", function (remoteStream) {
