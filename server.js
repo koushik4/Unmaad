@@ -5,7 +5,7 @@ const http = require("http")
 const path = require("path")
 const server = http.createServer(app)
 const io = socketio(server)
-const port = 5000 || process.env.PORT;
+const port =  process.env.PORT || 5000 ;
 let peerIds = []
 app.use(express.static(path.join(__dirname, "static")));
 app.get("/", (req, res) => {
