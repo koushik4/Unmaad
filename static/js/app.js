@@ -1,10 +1,9 @@
 const socket = io()
-const peer = new Peer(undefined, {
-    host: '/',
-    port: '5001'
-})
+const peer = new Peer({key: 'peerjs', host: 'mypeer1.herokuapp.com', secure: true, port: 443})
 
+console.log(peer)
 peer.on("open", peerId => {
+    console.log("fsinvsivsd");
     navigator.mediaDevices.getUserMedia({
         video: true,
         audio: true
