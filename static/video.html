@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Hello</title>
+</head>
+
+<body style="background-color:grey">
+    <h1>Unmaad VideoCall</h1>
+
+    <div id="koushik"></div>
+    <form action="../">
+        <input type="submit" onclick="endCall()" value="endCall">
+
+    </form>
+    <button onclick="mute()">mute</button>
+    <button onclick="video()">video</button>
+</body>
+<script src="socket.io/socket.io.js" defer></script>
+<script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js" defer></script>
+<script src="js/app.js" defer></script>
+
+</html>
