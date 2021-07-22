@@ -50,6 +50,7 @@ io.on("connection", socket => {
     })
     socket.on("disconnect", () => { 
         console.log(socketRooms[socket.id]);
+        if(socketRooms[socket.id]!=undefined)
         removeUser(socketRooms[socket.id][0],socketRooms[socket.id][1])
     })
 

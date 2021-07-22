@@ -14,13 +14,17 @@ peer.on("open", peerId => {
         video.id = id
         video.srcObject = stream
         video.muted = true
-        video.play()
+        video.addEventListener('loadedmetadata', () => {
+            video.play()
+          })
         document.getElementById("koushik").appendChild(video)
     })
     socket.on("assignRoomId", rId => {
         roomId = rId
+        console.log(roomId)
     })
     socket.on("RemoveThisUserFromServer", pId => {
+        if(document.getElementById(pId) != null)
         document.getElementById(pId).remove()
     })
     socket.emit("addNewUserToRoom", peerId);
@@ -29,14 +33,14 @@ peer.on("open", peerId => {
         console.log(document.getElementById(peerId).muted)
         document.getElementById(peerId).muted = mute
     })
-    socket.on("open", (id) => {
+    socket.on("open", (pid) => {
         console.log("people");
         navigator.mediaDevices.getUserMedia({
             video: true,
             audio: true
         }).then(stream => {
             // console.log(peerId,id)
-            let call = peer.call(id, stream);
+            let call = peer.call(pid, stream);
             let video = document.createElement("video");
             video.id = call.peer;
             call.on("stream", function (remoteStream) {
@@ -50,15 +54,15 @@ peer.on("open", peerId => {
         })
     })
 
-    socket.on("VideoToggleFromServer", (id, videoOn) => {
-        console.log(videoOn);
-        if (!videoOn) {
-            console.log(document.getElementById(id))
-            document.getElementById(id).pause()
-        }
-        else{ document.getElementById(id).play()}
+    // socket.on("VideoToggleFromServer", (id, videoOn) => {
+    //     console.log(videoOn);
+    //     if (!videoOn) {
+    //         console.log(document.getElementById(id))
+    //         document.getElementById(id).pause()
+    //     }
+    //     else{ document.getElementById(id).play()}
 
-    })
+    // })
     peer.on("call", call => {
         navigator.mediaDevices.getUserMedia({
             video: true,
@@ -100,10 +104,10 @@ function video() {
     socket.emit("VideoToggle", roomId, id, videoOn)
 }
 function addVideo(video, stream) {
+    console.log("koushik");
     video.srcObject = stream
     video.addEventListener('loadedmetadata', () => {
         video.play()
       })
-    video.play()
     document.getElementById("koushik").appendChild(video)
 }
