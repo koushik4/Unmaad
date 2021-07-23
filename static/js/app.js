@@ -1,6 +1,6 @@
 const socket = io()
 const peer = new Peer({ key: 'peerjs', host: 'mypeer1.herokuapp.com', secure: true, port: 443 })
-let isMute = true
+let isMute = false
 let videoOn = false
 let roomId = -1, id = -1;
 peer.on("open", peerId => {
@@ -17,7 +17,7 @@ peer.on("open", peerId => {
         video.addEventListener('loadedmetadata', () => {
             video.play()
           })
-        document.getElementById("koushik").appendChild(video)
+        document.getElementById("video-grid").appendChild(video)
     })
     socket.on("assignRoomId", rId => {
         roomId = rId
@@ -28,13 +28,13 @@ peer.on("open", peerId => {
         document.getElementById(pId).remove()
     })
     socket.emit("addNewUserToRoom", peerId);
-    socket.on("MuteThisUserFromServer", (peerId, mute) => {
-        console.log(peerId, mute)
-        console.log(document.getElementById(peerId).muted)
-        document.getElementById(peerId).muted = mute
+    socket.emit("Mute", roomId, id, isMute)
+    socket.on("MuteThisUserFromServer", (pId, mute) => { 
+        console.log("Status of ", pId,mute, "Status of mine ",isMute)
+        if(document.getElementById(pId) != null)
+        document.getElementById(pId).muted = mute
     })
     socket.on("open", (pid) => {
-        console.log("people");
         navigator.mediaDevices.getUserMedia({
             video: true,
             audio: true
@@ -90,13 +90,12 @@ socket.on("dis", (pId) => {
 })
 function endCall() {
     console.log("jis");
-    socket.emit("RemoveThisUser", id, roomId);
     document.getElementById(id).remove();
 }
 function mute() {
     isMute = !isMute
     console.log(isMute)
-    socket.emit("MuteThisUser", roomId, id, isMute)
+    socket.emit("Mute", roomId, id, isMute)
 }
 
 function video() {
@@ -109,5 +108,5 @@ function addVideo(video, stream) {
     video.addEventListener('loadedmetadata', () => {
         video.play()
       })
-    document.getElementById("koushik").appendChild(video)
+    document.getElementById("video-grid").appendChild(video)
 }
