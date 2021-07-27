@@ -88,7 +88,6 @@ socket.on("dis", (pId) => {
     socket.emit("print", id);
 })
 function endCall() {
-    console.log("jis");
     document.getElementById(id).remove();
 }
 function mute() {

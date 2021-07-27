@@ -32,17 +32,17 @@ io.on("connection", socket => {
         let roomId = url.parse(socket.handshake.headers.referer).pathname.substring(1);
         socket.join(roomId);
         socketRooms[socket.id] = [peerId,roomId]
-        if (rooms[roomId] == undefined) rooms[roomId] = [];
+        if (rooms[roomId] == undefined) rooms[roomId] = []; 
         rooms[roomId].push(peerId);
+        console.log(rooms[roomId].length)
         muteStatus[peerId] = true;
-        console.log(rooms[roomId],"Newuser",roomId)
         socket.emit("assignRoomId", roomId)
         socket.to(roomId).emit("open", peerId);
     })
     socket.on("GetMuteStatus",(pId)=>{
         for(let i of Object.keys(muteStatus)){
             if(i!=pId){
-            console.log(i,muteStatus[i],"Mute status");
+            // console.log(i,muteStatus[i],"Mute status");
             socket.emit("MuteThisUserFromServer",i,muteStatus[i]);
             }
         }
@@ -63,9 +63,10 @@ io.on("connection", socket => {
     function removeUser(peerId,roomId) {
         if (rooms[roomId] != undefined) {
             let index = rooms[roomId].indexOf(peerId);
-            rooms[roomId].splice(index);
-            console.log(index,"removing",peerId,rooms[roomId])
-            // if (rooms[roomId].length == 0) delete rooms[roomId];
+            // console.log(rooms[roomId],"hello",index)
+            rooms[roomId].splice(index,1);
+            console.log(rooms[roomId].length)
+            if (rooms[roomId].length == 0) delete rooms[roomId];
             socket.to(roomId).emit("RemoveThisUserFromServer", peerId)
         }
     }
