@@ -34,17 +34,21 @@ io.on("connection", socket => {
         socketRooms[socket.id] = [peerId,roomId]
         if (rooms[roomId] == undefined) rooms[roomId] = [];
         rooms[roomId].push(peerId);
+        muteStatus[peerId] = true;
         console.log(rooms[roomId],"Newuser",roomId)
-        for(let i of Object.keys(muteStatus)){
-            socket.emit("MuteThisUserFromServer",i,muteStatus[i]);
-        }
         socket.emit("assignRoomId", roomId)
         socket.to(roomId).emit("open", peerId);
     })
-    
+    socket.on("GetMuteStatus",(pId)=>{
+        for(let i of Object.keys(muteStatus)){
+            if(i!=pId){
+            console.log(i,muteStatus[i],"Mute status");
+            socket.emit("MuteThisUserFromServer",i,muteStatus[i]);
+            }
+        }
+    })
     socket.on("Mute",(roomId,peerId,mute)=>{    
         muteStatus[peerId] = mute
-        console.log(muteStatus,"hello");
         socket.to(roomId).emit("MuteThisUserFromServer",peerId,mute);
     })
     socket.on("VideoToggle",(roomId,id,videoOn)=>{
@@ -61,7 +65,7 @@ io.on("connection", socket => {
             let index = rooms[roomId].indexOf(peerId);
             rooms[roomId].splice(index);
             console.log(index,"removing",peerId,rooms[roomId])
-            if (rooms[roomId].length == 0) delete rooms[roomId];
+            // if (rooms[roomId].length == 0) delete rooms[roomId];
             socket.to(roomId).emit("RemoveThisUserFromServer", peerId)
         }
     }

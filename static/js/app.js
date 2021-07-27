@@ -1,11 +1,10 @@
 const socket = io()
 const peer = new Peer({ key: 'peerjs', host: 'mypeer1.herokuapp.com', secure: true, port: 443 })
-let isMute = false
+let isMute = true
 let videoOn = false
 let roomId = -1, id = -1;
 peer.on("open", peerId => {
     id = peerId
-    console.log(socket.rooms);
     navigator.mediaDevices.getUserMedia({
         video: true,
         audio: true
@@ -16,23 +15,24 @@ peer.on("open", peerId => {
         video.muted = true
         video.addEventListener('loadedmetadata', () => {
             video.play()
-          })
+        })
         document.getElementById("video-grid").appendChild(video)
+        socket.emit("GetMuteStatus",peerId)
     })
     socket.on("assignRoomId", rId => {
         roomId = rId
-        console.log(roomId)
     })
     socket.on("RemoveThisUserFromServer", pId => {
-        if(document.getElementById(pId) != null)
-        document.getElementById(pId).remove()
+        console.log(pId, document.getElementById(pId))
+        if (document.getElementById(pId) != null)
+            document.getElementById(pId).remove()
     })
     socket.emit("addNewUserToRoom", peerId);
-    socket.emit("Mute", roomId, id, isMute)
-    socket.on("MuteThisUserFromServer", (pId, mute) => { 
-        console.log("Status of ", pId,mute, "Status of mine ",isMute)
-        if(document.getElementById(pId) != null)
-        document.getElementById(pId).muted = mute
+    socket.on("MuteThisUserFromServer", (pId, mute) => {
+        if (document.getElementById(pId) != null) {
+            console.log("Status of ", pId, mute, "Status of ", peerId, isMute)
+            document.getElementById(pId).muted = mute
+        }
     })
     socket.on("open", (pid) => {
         navigator.mediaDevices.getUserMedia({
@@ -50,7 +50,6 @@ peer.on("open", peerId => {
             call.on('close', () => {
                 endCall()
             })
-            // addVideo(stream)
         })
     })
 
@@ -103,10 +102,10 @@ function video() {
     socket.emit("VideoToggle", roomId, id, videoOn)
 }
 function addVideo(video, stream) {
-    console.log("koushik");
     video.srcObject = stream
     video.addEventListener('loadedmetadata', () => {
         video.play()
-      })
+    })
     document.getElementById("video-grid").appendChild(video)
+    socket.emit("GetMuteStatus",id)
 }
